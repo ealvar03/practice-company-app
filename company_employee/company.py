@@ -1,7 +1,7 @@
 from company_employee.contract import Contract
 from company_employee.department import Department
 from company_employee.employee import Employee
-from datetime import date
+from company_employee.utilities import Utilities
 
 
 class Company:
@@ -39,15 +39,16 @@ class Company:
             item = self.employees_list[count]
             print(str(item.employee_name) + ' ' + str(item.employee_age) + ' ' + str(item.employee_id)
                   + ' ' + str(item.status) + ' ' + str(item.department) + ' ' + str(item.salary)
-                  + ' ' + str(item.category))
+                  + ' ' + str(item.category) + ' ' + str(item.street) + ' ' + str(item.st_number)
+                  + ' ' + str(item.postcode) + ' ' + str(item.city))
             count += 1
 
     # Method to create a list with all the departments information
     def create_department(self, department_name, department_id, location, company):
         self.department_list.append(Department(department_name, department_id, location, company))
 
-    # Method to show the employees that belong to a specific department
-    def show_employees_department(self, department_name):
+    # Method to show an employee who belongs to a specific department
+    def show_employee_department(self, department_name):
         count = 0
         while count < len(self.employees_list):
             item = self.employees_list[count]
@@ -80,7 +81,7 @@ class Company:
     def get_company_address(self):
         return str(self.street) + ' ' + str(self.st_number) + ' ' + str(self.postcode) + ' ' + str(self.city)
 
-    # Method to get the employees who work in a particular department
+    # Method to get all the employees who work in a particular department
     def get_employees_department(self, department_name):
         new_list = []
         count = 0
@@ -124,6 +125,31 @@ class Company:
                 return False
             count += 1
         return True
+
+    # Method that allows to change the department name
+    def change_department_name(self, department_name):
+        values_check = Utilities()
+        new_name = str(input('new name: '))
+        count = 0
+        count2 = 0
+        if self.__is_department_empty(department_name):
+            while count < len(self.department_list):
+                item = self.department_list[count]
+                if values_check.check_values(department_name, item.department_name):
+                    item.department_name = new_name
+                count += 1
+            return self.department_list
+        else:
+            while count < len(self.employees_list):
+                if values_check.check_values(department_name, self.employees_list[count].department):
+                    self.employees_list[count].department = new_name
+                count += 1
+
+            while count2 < len(self.department_list):
+                if values_check.check_values(department_name, self.department_list[count2].department_name):
+                    self.department_list[count2].department_name = new_name
+                count2 += 1
+            return self.department_list
 
     # Method to delete a department
     def delete_department(self, department_name):
