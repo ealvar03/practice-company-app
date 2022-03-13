@@ -9,6 +9,11 @@ class ContextualMenu:
     my_department = None
     my_company = None
     exit_program = True
+    department_name = ''
+    dep_id = ''
+    location = ''
+    company = ''
+    department_list = []
 
     def __init__(self):
         self.my_company = Company()
@@ -106,6 +111,8 @@ class ContextualMenu:
                 self.option_22()
             case '23':
                 self.option_23()
+            case '24':
+                self.option_24()
             case '50':
                 self.exit_program = False
 
@@ -113,16 +120,16 @@ class ContextualMenu:
     def option_11(self):
         employee_name = str(input('Introduce employee name: '))
         self.my_company.create_employee(employee_name,
-                                           str(input('Introduce employee age: ')),
-                                           str(input('Introduce employee dni: ')),
-                                           str(input('Introduce employee status: ')),
-                                           str(input('Introduce employee department: ')),
-                                           str(input('Introduce employee salary: ')),
-                                           str(input('Introduce employee category: ')),
-                                           str(input('Introduce employee street: ')),
-                                           str(input('Introduce employee street number: ')),
-                                           str(input('Introduce employee postcode: ')),
-                                           str(input('Introduce employee city: ')))
+                                        str(input('Introduce employee age: ')),
+                                        str(input('Introduce employee dni: ')),
+                                        str(input('Introduce employee status: ')),
+                                        str(input('Introduce employee department: ')),
+                                        str(input('Introduce employee salary: ')),
+                                        str(input('Introduce employee category: ')),
+                                        str(input('Introduce employee street: ')),
+                                        str(input('Introduce employee street number: ')),
+                                        str(input('Introduce employee postcode: ')),
+                                        str(input('Introduce employee city: ')))
         self.my_company.hire_employee(employee_name)
 
     # This method will display the employee details
@@ -162,30 +169,66 @@ class ContextualMenu:
 
     # This method will create and store a new department information
     def option_21(self):
-        self.my_department = Department(str(input('Introduce department name: ')),
-                                        str(input('Introduce department id: ')),
-                                        str(input('Introduce department location: ')),
-                                        str(input('Introduce company: ')))
-
         if self.department_information_exists():
             self.get_department_information()
-        else:
-            self.my_department.department_name = str(input('Introduce department name: '))
-            self.my_department.dep_id = str(input('Introduce department id: '))
-            self.my_department.location = str(input('Introduce department location: '))
-            self.my_department.company = str(input('Introduce company: '))
+            dep_file = open("/Users/elenaalvarezortega/PycharmProjects/OOP_exercises/company_employee/department.dat",
+                            "r")
+            # It needs to run through as long as there is information to read in the file, once there are no more lines
+            # it will chancge the 'check' value to False to stop running this while.
+            check = True
+            while check:
+                saved_departments = Department(self.department_name, self.dep_id, self.location, self.company)
+                self.department_name = dep_file.readline().rstrip('\n')
+                self.dep_id = dep_file.readline().rstrip('\n')
+                self.location = dep_file.readline().rstrip('\n')
+                self.company = dep_file.readline().rstrip('\n')
+                self.department_list.append(saved_departments)
+                if not self.department_name:
+                    check = False
+            self.department_name = str(input('Introduce department name: '))
+            self.dep_id = str(input('Introduce department id: '))
+            self.location = str(input('Introduce department location: '))
+            self.company = str(input('Introduce company: '))
+            new_department = Department(self.department_name, self.dep_id, self.location, self.company)
+            self.department_list.append(new_department)
 
             dep_file = open("/Users/elenaalvarezortega/PycharmProjects/OOP_exercises/company_employee/department.dat",
-                            "w+")
-            dep_file.write(self.my_department.department_name + os.linesep)
-            dep_file.write(self.my_department.dep_id + os.linesep)
-            dep_file.write(self.my_department.location + os.linesep)
-            dep_file.write(self.my_department.company)
+                            "a+")
+            dep_file.write(self.department_name + os.linesep)
+            dep_file.write(self.dep_id + os.linesep)
+            dep_file.write(self.location + os.linesep)
+            dep_file.write(self.company + os.linesep)
             dep_file.close()
+            print(self.department_list)
+        else:
+            self.department_name = str(input('Introduce department name: '))
+            self.dep_id = str(input('Introduce department id: '))
+            self.location = str(input('Introduce department location: '))
+            self.company = str(input('Introduce company: '))
+            self.my_department = Department(self.department_name, self.dep_id, self.location, self.company)
+
+            self.department_list.append(self.department_name)
+            self.department_list.append(self.dep_id)
+            self.department_list.append(self.location)
+            self.department_list.append(self.company)
+
+            dep_file = open("/Users/elenaalvarezortega/PycharmProjects/OOP_exercises/company_employee/department.dat",
+                            "a+")
+            dep_file.write(self.department_name + os.linesep)
+            dep_file.write(self.dep_id + os.linesep)
+            dep_file.write(self.location + os.linesep)
+            dep_file.write(self.company + os.linesep)
+            dep_file.close()
+    def show_dep(self):
+        count = 0
+        while len(self.department_list) > count:
+            print(self.department_list[count].department_name)
+            count += 1
 
     # This method will provide the data for department information and will allow it to be modified
     def get_department_information(self):
-        dep_file = open("/Users/elenaalvarezortega/PycharmProjects/OOP_exercises/company_employee/company.dat", "r")
+        self.my_department = Department(self.department_name, self.dep_id, self.location, self.company)
+        dep_file = open("/Users/elenaalvarezortega/PycharmProjects/OOP_exercises/company_employee/department.dat", "r")
         self.my_department.department_name = dep_file.readline().rstrip('\n')
         self.my_department.dep_id = dep_file.readline().rstrip('\n')
         self.my_department.location = dep_file.readline().rstrip('\n')
@@ -210,3 +253,6 @@ class ContextualMenu:
         department_name = str(input('Introduce department name: '))
         self.my_company.delete_department(department_name)
         getch.getch()
+
+    def option_24(self):
+        self.show_dep()

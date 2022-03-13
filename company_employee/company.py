@@ -32,7 +32,7 @@ class Company:
         self.employees_list.append(Employee(employee_name, age, dni, status, department, salary, category, street,
                                             st_number, postcode, city))
 
-    # Method to show the employees information
+    # Method to show all the employees information
     def display_employee_data(self):
         count = 0
         while count < len(self.employees_list):
@@ -47,14 +47,14 @@ class Company:
     def create_department(self, department_name, department_id, location, company):
         self.department_list.append(Department(department_name, department_id, location, company))
 
-    # Method to show an employee who belongs to a specific department
-    def show_employee_department(self, department_name):
-        count = 0
-        while count < len(self.employees_list):
-            item = self.employees_list[count]
-            if department_name == item.department:
-                print(item.employee_name)
-            count += 1
+    # # Method to show an employee who belongs to a specific department
+    # def show_employee_department(self, department_name):
+    #     count = 0
+    #     while count < len(self.employees_list):
+    #         item = self.employees_list[count]
+    #         if department_name == item.department:
+    #             print(item.employee_name)
+    #         count += 1
 
     # Method to show all the department within a company
     def show_departments(self, company_name):
@@ -99,6 +99,7 @@ class Company:
         self.contract_list.append(new_contract)
 
     # Method to delete a contract
+    # Falta eliminar empleado de la compañia (employees_list)
     def delete_contract(self, employee_name):
         count = 0
         while count < len(self.contract_list):
